@@ -3,8 +3,8 @@ package org.skypro.skyshop.product;
 import java.util.Objects;
 
 public class Product {
-    private String title;
-    public int price;
+    private final String title;
+    public final int price;
 
     public Product(String title, int price) {
         this.title = title;
@@ -15,16 +15,9 @@ public class Product {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public int getPrice() {
         return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
     }
 
     @Override
