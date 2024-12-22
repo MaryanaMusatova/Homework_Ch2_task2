@@ -1,26 +1,20 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
-import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.DiscountedProduct;
+import org.skypro.skyshop.product.FixPriceProduct;
+import org.skypro.skyshop.product.SimpleProduct;
 
 public class App {
 
 
     public static void main(String[] args) {
-        Product[] product = new Product[5];
-        product[0] = new Product("капуста белокачанная, кг", 34);
-        product[1] = new Product("куриное филе,кг", 297);
-        product[2] = new Product("хлеб Чиабатта пшеничная, шт", 60);
-        product[3] = new Product("крупа гречневая, 800гр", 34);
-        product[4] = new Product("картофель, кг", 44);
-
         ProductBasket basket = new ProductBasket();
-
         System.out.println("Добавление товара в корзину");
-        basket.addProductInBasket(product[0]);
-        basket.addProductInBasket(product[1]);
-        basket.addProductInBasket(product[2]);
-        basket.addProductInBasket(product[4]);
+        basket.addProductInBasket(new SimpleProduct("капуста белокачанная, кг", 34));
+        basket.addProductInBasket(new SimpleProduct("куриное филе,кг", 297));
+        basket.addProductInBasket(new SimpleProduct("хлеб Чиабатта пшеничная, шт", 60));
+        basket.addProductInBasket(new FixPriceProduct("картофель, кг", 25));
 
         System.out.println("и печать содержимого корзины с несколькими товарами:");
         basket.printProductBasket();
@@ -30,15 +24,19 @@ public class App {
         System.out.println(basket.sumOfBasket());
         System.out.println();
 
-        System.out.println("Добавление товара \"крупа гречневая, 800гр\" в корзину");
-        basket.addProductInBasket(product[3]);
+        System.out.println("Добавление товара \"крупа гречневая\" в корзину");
+        basket.addProductInBasket(new DiscountedProduct("крупа гречневая", 50, 30));
 
         System.out.println("и печать содержимого корзины с добавленным товаром:");
         basket.printProductBasket();
         System.out.println();
 
+        System.out.println("Специальных товаров: ");
+        basket.countingSpecialItems();
+        System.out.println();
+
         System.out.println("Добавление товара в заполненную корзину, в которой нет свободного места:");
-        basket.addProductInBasket(product[4]);
+        basket.addProductInBasket(new SimpleProduct("куриное филе,кг", 297));
         System.out.println();
 
         System.out.println("Получение стоимости корзины с несколькими товарами:");

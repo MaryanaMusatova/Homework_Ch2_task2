@@ -1,6 +1,9 @@
 package org.skypro.skyshop.basket;
 
+import org.skypro.skyshop.product.DiscountedProduct;
+import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.SimpleProduct;
 
 import java.util.Arrays;
 
@@ -13,7 +16,7 @@ public class ProductBasket {
 
     }
 
-    public void addProductInBasket(Product product) {
+    public void addProductInBasket(SimpleProduct product) {
         int flag = 0;
         for (int i = 0; i < lengthOfProduct; i++) {
             if (basket[i] == null) {
@@ -28,6 +31,35 @@ public class ProductBasket {
         }
     }
 
+    public void addProductInBasket(DiscountedProduct product) {
+        int flag = 0;
+        for (int i = 0; i < lengthOfProduct; i++) {
+            if (basket[i] == null) {
+                basket[i] = product;
+                return;
+            } else {
+                flag++;
+            }
+        }
+        if (flag >= 5) {
+            System.out.println("Невозможно добавить продукт!");
+        }
+    }
+
+    public void addProductInBasket(FixPriceProduct product) {
+        int flag = 0;
+        for (int i = 0; i < lengthOfProduct; i++) {
+            if (basket[i] == null) {
+                basket[i] = product;
+                return;
+            } else {
+                flag++;
+            }
+        }
+        if (flag >= 5) {
+            System.out.println("Невозможно добавить продукт!");
+        }
+    }
 
     public int sumOfBasket() {
         int sum = 0;
@@ -69,5 +101,24 @@ public class ProductBasket {
     @Override
     public String toString() {
         return Arrays.toString(basket);
+    }
+
+
+    public void countingSpecialItems() {
+        int specialCount = 0;
+        for (Product product : basket) {
+            if (product != null && product.isSpecial()) {
+                specialCount++;
+                System.out.println(product.getTitle() + ": " + product.getPrice() + " (Специальный товар)");
+            } else {
+                System.out.println(product);
+            }
+        }
+        System.out.println("Специальных товаров: " + specialCount);
+        if (specialCount == 0) {
+            System.out.println("Специальных товаров нет");
+
+
+        }
     }
 }
