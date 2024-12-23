@@ -1,9 +1,6 @@
 package org.skypro.skyshop.basket;
 
-import org.skypro.skyshop.product.DiscountedProduct;
-import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
-import org.skypro.skyshop.product.SimpleProduct;
 
 import java.util.Arrays;
 
@@ -16,37 +13,7 @@ public class ProductBasket {
 
     }
 
-    public void addProductInBasket(SimpleProduct product) {
-        int flag = 0;
-        for (int i = 0; i < lengthOfProduct; i++) {
-            if (basket[i] == null) {
-                basket[i] = product;
-                return;
-            } else {
-                flag++;
-            }
-        }
-        if (flag >= 5) {
-            System.out.println("Невозможно добавить продукт!");
-        }
-    }
-
-    public void addProductInBasket(DiscountedProduct product) {
-        int flag = 0;
-        for (int i = 0; i < lengthOfProduct; i++) {
-            if (basket[i] == null) {
-                basket[i] = product;
-                return;
-            } else {
-                flag++;
-            }
-        }
-        if (flag >= 5) {
-            System.out.println("Невозможно добавить продукт!");
-        }
-    }
-
-    public void addProductInBasket(FixPriceProduct product) {
+    public void addProductInBasket(Product product) {
         int flag = 0;
         for (int i = 0; i < lengthOfProduct; i++) {
             if (basket[i] == null) {
@@ -75,9 +42,12 @@ public class ProductBasket {
             if (product != null) System.out.println(product);
             flag++;
         }
-        System.out.printf("Итого: %d\n", this.sumOfBasket());
 
-        if (flag == 0) System.out.println("В корзине пусто!");
+        if (flag != 0) {
+            System.out.printf("Итого: %d\n", this.sumOfBasket());
+        } else {
+            System.out.println("В корзине пусто!");
+        }
     }
 
     public void clearProductBasket() {
@@ -89,8 +59,7 @@ public class ProductBasket {
     public boolean checkAvailability(String title) {
         boolean check = false;
         for (Product p : basket) {
-            if (p == null) continue;
-            if (title.equals(p.getTitle())) {
+            if (p!= null && title.equals(p.getTitle())) {
                 check = true;
                 break;
             }
