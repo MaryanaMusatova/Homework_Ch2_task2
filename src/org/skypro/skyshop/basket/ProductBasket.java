@@ -28,7 +28,6 @@ public class ProductBasket {
         }
     }
 
-
     public int sumOfBasket() {
         int sum = 0;
         for (Product product : basket) {
@@ -43,9 +42,12 @@ public class ProductBasket {
             if (product != null) System.out.println(product);
             flag++;
         }
-        System.out.printf("Итого: %d\n", this.sumOfBasket());
 
-        if (flag == 0) System.out.println("В корзине пусто!");
+        if (flag != 0) {
+            System.out.printf("Итого: %d\n", this.sumOfBasket());
+        } else {
+            System.out.println("В корзине пусто!");
+        }
     }
 
     public void clearProductBasket() {
@@ -57,8 +59,7 @@ public class ProductBasket {
     public boolean checkAvailability(String title) {
         boolean check = false;
         for (Product p : basket) {
-            if (p == null) continue;
-            if (title.equals(p.getTitle())) {
+            if (p!= null && title.equals(p.getTitle())) {
                 check = true;
                 break;
             }
@@ -69,5 +70,24 @@ public class ProductBasket {
     @Override
     public String toString() {
         return Arrays.toString(basket);
+    }
+
+
+    public void countingSpecialItems() {
+        int specialCount = 0;
+        for (Product product : basket) {
+            if (product != null && product.isSpecial()) {
+                specialCount++;
+                System.out.println(product.getTitle() + ": " + product.getPrice() + " (Специальный товар)");
+            } else {
+                System.out.println(product);
+            }
+        }
+        System.out.println("Специальных товаров: " + specialCount);
+        if (specialCount == 0) {
+            System.out.println("Специальных товаров нет");
+
+
+        }
     }
 }
