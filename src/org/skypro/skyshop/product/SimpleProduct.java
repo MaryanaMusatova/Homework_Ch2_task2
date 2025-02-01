@@ -13,6 +13,7 @@ public class SimpleProduct extends Product {
         this.priceSimpleProduct = priceSimpleProduct;
     }
 
+
     @Override
     public int getPrice() {
         return priceSimpleProduct;
@@ -26,4 +27,6 @@ public class SimpleProduct extends Product {
     public String toString() {
         return getTitle() + ": " + getPrice();
     }
+
+
 }

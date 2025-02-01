@@ -1,6 +1,6 @@
 package org.skypro.skyshop.product;
 
-public class DiscountedProduct extends Product {
+public  class DiscountedProduct extends Product {
 
     private int basePrice;
     private int discountPercent;
@@ -13,7 +13,7 @@ public class DiscountedProduct extends Product {
 
         }
         if (discountPercent < 0 || discountPercent > 100) {
-            System.out.println("Процент скидки должен быть числом в диапазоне от 0 до 100 включитель");
+            System.out.println("Процент скидки должен быть числом в диапазоне от 0 до 100 включительно");
         }
 
         this.basePrice = basePrice;
@@ -34,4 +34,7 @@ public class DiscountedProduct extends Product {
     public String toString() {
         return getTitle() + ": цена со скидкой: " + getPrice() +"(скидка " +discountPercent+"% )";
     }
+
+
+
 }

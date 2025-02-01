@@ -21,4 +21,6 @@ public class FixPriceProduct extends Product {
     public String toString() {
         return getTitle() + ": фиксированная цена: " + getPrice();
     }
+
+
 }

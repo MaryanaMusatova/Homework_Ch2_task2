@@ -1,9 +1,14 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
+import org.skypro.skyshop.product.Article;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.searchProduct.SearchEngine;
+
+import java.util.Arrays;
+
 
 public class App {
 
@@ -64,5 +69,41 @@ public class App {
 
         System.out.println("Поиск товара по имени \"куриное филе\" в пустой корзине:");
         System.out.println(basket.checkAvailability("куриное филе"));
+
+
+        System.out.println();
+
+        System.out.println("ДЗ ПОЛИМОРФИЗМ. ИНТЕРФЕЙСЫ");
+        Article article1 = new Article(
+                "Статья о капусте белокочанной",
+                "Белокочанная капуста — овощная культура, ценный и широко распространённый пищевой продукт"
+        );
+        Article article2 = new Article(
+                "Статья о курином филе",
+                "Куриным филе обычно называют белое мясо куриной грудки, очищенное от кожи, хрящей и костей. Куриное филе считается самым диетическим мясом из всей курицы, благодаря наименьшему количеству жиров и пищевых волокон"
+        );
+
+        SearchEngine searchEngine = new SearchEngine(5);
+        searchEngine.add(new SimpleProduct("капуста белокачанная, кг", 34));
+        searchEngine.add(new SimpleProduct("куриное филе,кг", 297));
+        searchEngine.add(new FixPriceProduct("картофель, кг", 25));
+        searchEngine.add(article1);
+        searchEngine.add(article2);
+
+        System.out.println(Arrays.toString(searchEngine.search("овощная культура")));
+        System.out.println(Arrays.toString(searchEngine.search("белое")));
+
+
+
+
+
     }
 }
+
+
+
+
+
+
+
+
