@@ -7,12 +7,14 @@ public class SimpleProduct extends Product {
     public SimpleProduct(String title, int priceSimpleProduct) {
         super(title);
 
-        if (priceSimpleProduct <= 0) {
-            System.out.println("Цена продукта должна быть строго больше 0");
-        }
-        this.priceSimpleProduct = priceSimpleProduct;
-    }
+        if (priceSimpleProduct > 1) {
+            this.priceSimpleProduct = priceSimpleProduct;
+        } else {
+            throw new IllegalArgumentException("Цена продукта должна быть строго больше 0");
 
+
+        }
+    }
 
     @Override
     public int getPrice() {

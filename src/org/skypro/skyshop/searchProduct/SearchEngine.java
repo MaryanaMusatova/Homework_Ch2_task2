@@ -1,5 +1,7 @@
 package org.skypro.skyshop.searchProduct;
 
+import org.skypro.skyshop.exceptions.BestResultNotFound;
+
 public class SearchEngine {
     Searchable[] searchObject;
     int size;
@@ -31,6 +33,19 @@ public class SearchEngine {
                 break;
             }
         }
+    }
+
+    public Searchable getSearchTerm(String search) throws BestResultNotFound {
+        Searchable searchable = null;
+        for (int i = 0; i < searchObject.length; i++) {
+            if (searchObject[i].toString().contains(search)) {
+                System.out.println(searchObject[i].toString());
+                searchable = searchObject[i];
+            }
+        }
+        if (searchable != null) {
+            return searchable;
+        } else throw new BestResultNotFound("Для поисковой строки " + search + " не нашлось подходящей статьи");
     }
 }
 

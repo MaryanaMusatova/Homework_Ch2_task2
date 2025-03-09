@@ -1,10 +1,8 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
-import org.skypro.skyshop.product.Article;
-import org.skypro.skyshop.product.DiscountedProduct;
-import org.skypro.skyshop.product.FixPriceProduct;
-import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.exceptions.BestResultNotFound;
+import org.skypro.skyshop.product.*;
 import org.skypro.skyshop.searchProduct.SearchEngine;
 
 import java.util.Arrays;
@@ -93,14 +91,44 @@ public class App {
         System.out.println(Arrays.toString(searchEngine.search("овощная культура")));
         System.out.println(Arrays.toString(searchEngine.search("белое")));
 
+        System.out.println();
+        System.out.println("ИСКЛЮЧЕНИЯ в Java");
 
+        try {
+            Product product1 = new SimpleProduct("Слива", 0);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Проверка завершена");
 
+        try {
+            Product product2 = new DiscountedProduct("Шоколад", 150, 102);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Проверка завершена");
+
+        try {
+            System.out.println("максимальное количество повторов строки(\"яблоко\") = " + searchEngine.getSearchTerm("яблоко"));
+        } catch (BestResultNotFound e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Проверка завершена");
+
+        try {
+            System.out.println("Максимальное количество повторов строки(\"филе\") = " + searchEngine.getSearchTerm("филе"));
+        } catch (BestResultNotFound e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Проверка завершена");
 
 
     }
 }
 
-
+    
 
 
 
