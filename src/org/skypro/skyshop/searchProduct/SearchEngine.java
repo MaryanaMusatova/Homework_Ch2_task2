@@ -2,50 +2,51 @@ package org.skypro.skyshop.searchProduct;
 
 import org.skypro.skyshop.exceptions.BestResultNotFound;
 
-public class SearchEngine {
-    Searchable[] searchObject;
-    int size;
+import java.util.ArrayList;
+import java.util.List;
 
-    public SearchEngine(int size) {
-        this.size = size;
-        searchObject = new Searchable[size];
+
+public class SearchEngine {
+    List<Searchable> searchObject;
+
+    public SearchEngine() {
+        this.searchObject = new ArrayList<>();
     }
 
-    public Searchable[] search(String searchTerm) {
-        Searchable[] result = new Searchable[5];
-        for (int i = 0; i < size; i++) {
-            if (searchObject[i].getStringRepresentation().contains(searchTerm)) {
-                int count = 0;
-                result[count] = searchObject[i];
-                if (i == size) {
-                    break;
-                }
+    public List<Searchable> search(String searchTerm) {
+        List<Searchable> result = new ArrayList<>();
+        for (Searchable searchable : searchObject) {
+            if (searchable.getStringRepresentation().contains(searchTerm)) {
+                result.add(searchable);
             }
         }
         return result;
     }
 
-
     public void add(Searchable object) {
-        for (int i = 0; i < size; i++) {
-            if (searchObject[i] == null) {
-                searchObject[i] = object;
-                break;
-            }
-        }
+        searchObject.add(object);
     }
 
-    public Searchable getSearchTerm(String search) throws BestResultNotFound {
-        Searchable searchable = null;
-        for (int i = 0; i < searchObject.length; i++) {
-            if (searchObject[i].toString().contains(search)) {
-                System.out.println(searchObject[i].toString());
-                searchable = searchObject[i];
+    public List<Searchable> getSearchTerm(String search) throws BestResultNotFound {
+
+        if (searchObject == null || search == null) {
+            throw new IllegalArgumentException("Поисковый запрос не может иметь значения null");
+            }
+
+        List<Searchable> results = new ArrayList<>();
+        for (Searchable obj : searchObject) {
+            if (obj != null && obj.toString().contains(search)) {
+                System.out.println("Найдено: " + obj);
+                results.add(obj);
             }
         }
-        if (searchable != null) {
-            return searchable;
-        } else throw new BestResultNotFound("Для поисковой строки " + search + " не нашлось подходящей статьи");
-    }
+
+        if (results.isEmpty()) {
+            throw new BestResultNotFound("Для поисковой строки " + search + " не нашлось подходящей статьи");
+            }
+
+        return results;
+        }
 }
+
 

@@ -2,30 +2,20 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 
 public class ProductBasket {
-    private static final int lengthOfProduct = 5;
-    private final Product[] basket;
+    List<Product> basket;
 
     public ProductBasket() {
-        this.basket = new Product[lengthOfProduct];
-
+        this.basket = new ArrayList<>();
     }
 
     public void addProductInBasket(Product product) {
-        int flag = 0;
-        for (int i = 0; i < lengthOfProduct; i++) {
-            if (basket[i] == null) {
-                basket[i] = product;
-                return;
-            } else {
-                flag++;
-            }
-        }
-        if (flag >= 5) {
-            System.out.println("Невозможно добавить продукт!");
-        }
+        basket.add(product);
     }
 
     public int sumOfBasket() {
@@ -51,15 +41,13 @@ public class ProductBasket {
     }
 
     public void clearProductBasket() {
-        for (int i = 0; i < lengthOfProduct; i++) {
-            basket[i] = null;
-        }
+        basket.clear();
     }
 
     public boolean checkAvailability(String title) {
         boolean check = false;
         for (Product p : basket) {
-            if (p!= null && title.equals(p.getTitle())) {
+            if (p != null && title.equals(p.getTitle())) {
                 check = true;
                 break;
             }
@@ -67,13 +55,7 @@ public class ProductBasket {
         return check;
     }
 
-    @Override
-    public String toString() {
-        return Arrays.toString(basket);
-    }
-
-
-    public void countingSpecialItems() {
+    public List<Product> countingSpecialItems() {
         int specialCount = 0;
         for (Product product : basket) {
             if (product != null && product.isSpecial()) {
@@ -86,8 +68,28 @@ public class ProductBasket {
         System.out.println("Специальных товаров: " + specialCount);
         if (specialCount == 0) {
             System.out.println("Специальных товаров нет");
-
-
         }
+        return List.of();
+    }
+
+    public List<Product> deleteProduct(String name) {
+
+        List<Product> deleted = new ArrayList<>();
+        Iterator<Product> iterator = basket.iterator();
+        while (iterator.hasNext()) {
+            Product product = iterator.next();
+            if (product.getTitle().equals(name)) {
+                deleted.add(product);
+                iterator.remove();
+            }
+        }
+
+        if (deleted.isEmpty()) {
+            System.out.println("Список удаленных продуктов пуст.");
+        } else {
+            System.out.println("Удаленные продукты: " + deleted);
+        }
+        return deleted;
+
     }
 }

@@ -1,5 +1,7 @@
 package org.skypro.skyshop.searchProduct;
 
+
+
 public interface Searchable {
 
 
