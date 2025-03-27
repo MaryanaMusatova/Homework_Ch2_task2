@@ -1,26 +1,21 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
-import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.exceptions.BestResultNotFound;
+import org.skypro.skyshop.product.*;
+import org.skypro.skyshop.searchProduct.SearchEngine;
+
 
 public class App {
 
 
     public static void main(String[] args) {
-        Product[] product = new Product[5];
-        product[0] = new Product("капуста белокачанная, кг", 34);
-        product[1] = new Product("куриное филе,кг", 297);
-        product[2] = new Product("хлеб Чиабатта пшеничная, шт", 60);
-        product[3] = new Product("крупа гречневая, 800гр", 34);
-        product[4] = new Product("картофель, кг", 44);
-
         ProductBasket basket = new ProductBasket();
-
         System.out.println("Добавление товара в корзину");
-        basket.addProductInBasket(product[0]);
-        basket.addProductInBasket(product[1]);
-        basket.addProductInBasket(product[2]);
-        basket.addProductInBasket(product[4]);
+        basket.addProductInBasket(new SimpleProduct("капуста белокачанная, кг", 34));
+        basket.addProductInBasket(new SimpleProduct("куриное филе,кг", 297));
+        basket.addProductInBasket(new SimpleProduct("хлеб Чиабатта пшеничная, шт", 60));
+        basket.addProductInBasket(new FixPriceProduct("картофель, кг", 25));
 
         System.out.println("и печать содержимого корзины с несколькими товарами:");
         basket.printProductBasket();
@@ -30,15 +25,16 @@ public class App {
         System.out.println(basket.sumOfBasket());
         System.out.println();
 
-        System.out.println("Добавление товара \"крупа гречневая, 800гр\" в корзину");
-        basket.addProductInBasket(product[3]);
+        System.out.println("Добавление товара \"крупа гречневая\" в корзину");
+        basket.addProductInBasket(new DiscountedProduct("крупа гречневая", 50, 30));
 
         System.out.println("и печать содержимого корзины с добавленным товаром:");
         basket.printProductBasket();
         System.out.println();
 
-        System.out.println("Добавление товара в заполненную корзину, в которой нет свободного места:");
-        basket.addProductInBasket(product[4]);
+
+        System.out.println("Специальных товаров: ");
+        basket.countingSpecialItems();
         System.out.println();
 
         System.out.println("Получение стоимости корзины с несколькими товарами:");
@@ -66,5 +62,90 @@ public class App {
 
         System.out.println("Поиск товара по имени \"куриное филе\" в пустой корзине:");
         System.out.println(basket.checkAvailability("куриное филе"));
+
+
+        System.out.println();
+
+        System.out.println("ДЗ ПОЛИМОРФИЗМ. ИНТЕРФЕЙСЫ");
+        Article article1 = new Article(
+                "Статья о капусте белокочанной",
+                "Белокочанная капуста — овощная культура, ценный и широко распространённый пищевой продукт"
+        );
+        Article article2 = new Article(
+                "Статья о курином филе",
+                "Куриным филе обычно называют белое мясо куриной грудки, очищенное от кожи, хрящей и костей. Куриное филе считается самым диетическим мясом из всей курицы, благодаря наименьшему количеству жиров и пищевых волокон"
+        );
+
+        SearchEngine searchEngine = new SearchEngine();
+        searchEngine.add(new SimpleProduct("капуста белокачанная, кг", 34));
+        searchEngine.add(new SimpleProduct("куриное филе,кг", 297));
+        searchEngine.add(new FixPriceProduct("картофель, кг", 25));
+        searchEngine.add(article1);
+        searchEngine.add(article2);
+
+        System.out.println((searchEngine.search("овощная культура")));
+        System.out.println((searchEngine.search("белое")));
+
+        System.out.println();
+        System.out.println("ИСКЛЮЧЕНИЯ в Java");
+
+        try {
+            Product product1 = new SimpleProduct("Слива", 0);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Проверка завершена");
+
+        try {
+            Product product2 = new DiscountedProduct("Шоколад", 150, 102);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Проверка завершена");
+
+        try {
+            System.out.println("максимальное количество повторов строки(\"яблоко\") = " + searchEngine.getSearchTerm("яблоко"));
+        } catch (BestResultNotFound e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Проверка завершена");
+
+        try {
+            System.out.println("Все подходящие результаты(\"филе\") = " + searchEngine.getSearchTerm("филе"));
+        } catch (BestResultNotFound e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Проверка завершена");
+
+        System.out.println();
+        System.out.println("ДЗ: Java Collections Framework: List");
+
+        basket.addProductInBasket(new SimpleProduct("ананас",185));
+        basket.addProductInBasket(new DiscountedProduct("вишня",98,10));
+        basket.addProductInBasket(new FixPriceProduct("яблочный сок",25));
+        basket.addProductInBasket(new FixPriceProduct("конфеты мерси",25));
+
+        System.out.println("удаление существующего продукта:");
+        basket.deleteProduct("ананас");
+        basket.deleteProduct("вишня");
+        System.out.println("печать содержимого корзины после удаления существующего продукта:");
+        basket.printProductBasket();
+        System.out.println("удаление несуществующего продукта:");
+        basket.deleteProduct("арбуз");
+        System.out.println("печать содержимого корзины после удаления несуществующего продукта:");
+        basket.printProductBasket();
+
+        System.out.println();
+        System.out.println("ДЗ: Java Collections Framework: Map (демонстрация измененного метода поиска по ключам-именам, значения - сами объекты) ");
+        System.out.println((searchEngine.search("капуста белокачанная, кг")));
     }
 }
+    
+
+
+
+
+
+
