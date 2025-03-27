@@ -4,19 +4,21 @@ import org.skypro.skyshop.exceptions.BestResultNotFound;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SearchEngine {
-    List<Searchable> searchObject;
+    private final Map<String, Searchable> searchObject;
 
     public SearchEngine() {
-        this.searchObject = new ArrayList<>();
+        this.searchObject = new TreeMap<>();
     }
 
     public List<Searchable> search(String searchTerm) {
         List<Searchable> result = new ArrayList<>();
-        for (Searchable searchable : searchObject) {
-            if (searchable.getStringRepresentation().contains(searchTerm)) {
+        for (Map.Entry<String, Searchable> entry : searchObject.entrySet()) {
+            Searchable searchable = entry.getValue();
+            if (searchable.searchTerm().contains(searchTerm)) {
                 result.add(searchable);
             }
         }
@@ -24,29 +26,26 @@ public class SearchEngine {
     }
 
     public void add(Searchable object) {
-        searchObject.add(object);
+        if (object == null) {
+            throw new IllegalArgumentException("Поисковый запрос не может быть null");
+        }
+        searchObject.putIfAbsent(object.searchTerm(), object);//или здесь лучше использовать просто put?
     }
 
-    public List<Searchable> getSearchTerm(String search) throws BestResultNotFound {
+    public Searchable getSearchTerm(String search) throws BestResultNotFound {
+        if (search == null) {
+            throw new IllegalArgumentException("Поисковый запрос не может быть null");
+        }
 
-        if (searchObject == null || search == null) {
-            throw new IllegalArgumentException("Поисковый запрос не может иметь значения null");
-            }
-
-        List<Searchable> results = new ArrayList<>();
-        for (Searchable obj : searchObject) {
-            if (obj != null && obj.toString().contains(search)) {
-                System.out.println("Найдено: " + obj);
-                results.add(obj);
+        for (Map.Entry<String, Searchable> entry : searchObject.entrySet()) {
+            Searchable searchable = entry.getValue();
+            if (searchable != null && searchable.getStringRepresentation().contains(search)) {
+                return searchable;
             }
         }
 
-        if (results.isEmpty()) {
-            throw new BestResultNotFound("Для поисковой строки " + search + " не нашлось подходящей статьи");
-            }
-
-        return results;
-        }
+        throw new BestResultNotFound("Для поисковой строки " + search + " не нашлось подходящей статьи");
+    }
 }
 
 

@@ -3,41 +3,50 @@ package org.skypro.skyshop.basket;
 import org.skypro.skyshop.product.Product;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ProductBasket {
-    List<Product> basket;
+    Map<String, List<Product>> basket;
 
     public ProductBasket() {
-        this.basket = new ArrayList<>();
+        this.basket = new HashMap<>();
     }
 
     public void addProductInBasket(Product product) {
-        basket.add(product);
+
+        String title = product.getTitle();
+        List<Product> productList = basket.computeIfAbsent(product.getTitle(), k -> new ArrayList<>());
+        productList.add(product);
+        basket.put(title, productList);
     }
 
     public int sumOfBasket() {
         int sum = 0;
-        for (Product product : basket) {
-            if (product != null) sum += product.getPrice();
+        for (List<Product> products : basket.values()) {
+            for (Product product : products) {
+                if (product != null) sum += product.getPrice();
+            }
         }
         return sum;
     }
 
     public void printProductBasket() {
-        int flag = 0;
-        for (Product product : basket) {
-            if (product != null) System.out.println(product);
-            flag++;
+        if (basket.isEmpty()) {
+            System.out.println("В корзине пусто!");
+            return;
         }
 
-        if (flag != 0) {
-            System.out.printf("Итого: %d\n", this.sumOfBasket());
-        } else {
-            System.out.println("В корзине пусто!");
+        for (Map.Entry<String, List<Product>> entry : basket.entrySet()) {
+            for (Product product : entry.getValue()) {
+                if (product != null) {
+                    System.out.println(product);
+                }
+            }
         }
+        System.out.printf("Итого: %d\n", this.sumOfBasket());
     }
 
     public void clearProductBasket() {
@@ -45,24 +54,19 @@ public class ProductBasket {
     }
 
     public boolean checkAvailability(String title) {
-        boolean check = false;
-        for (Product p : basket) {
-            if (p != null && title.equals(p.getTitle())) {
-                check = true;
-                break;
-            }
-        }
-        return check;
+        return basket.containsKey(title) && !basket.get(title).isEmpty();
     }
 
     public List<Product> countingSpecialItems() {
         int specialCount = 0;
-        for (Product product : basket) {
-            if (product != null && product.isSpecial()) {
-                specialCount++;
-                System.out.println(product.getTitle() + ": " + product.getPrice() + " (Специальный товар)");
-            } else {
-                System.out.println(product);
+        for (List<Product> products : basket.values()) {
+            for (Product product : products) {
+                if (product != null && product.isSpecial()) {
+                    specialCount++;
+                    System.out.println(product.getTitle() + ": " + product.getPrice() + " (Специальный товар)");
+                } else if (product != null) {
+                    System.out.println(product);
+                }
             }
         }
         System.out.println("Специальных товаров: " + specialCount);
@@ -74,22 +78,15 @@ public class ProductBasket {
 
     public List<Product> deleteProduct(String name) {
 
-        List<Product> deleted = new ArrayList<>();
-        Iterator<Product> iterator = basket.iterator();
-        while (iterator.hasNext()) {
-            Product product = iterator.next();
-            if (product.getTitle().equals(name)) {
-                deleted.add(product);
-                iterator.remove();
-            }
-        }
+        List<Product> deleted = basket.remove(name);
 
-        if (deleted.isEmpty()) {
+        if (deleted == null || deleted.isEmpty()) {
             System.out.println("Список удаленных продуктов пуст.");
+            return List.of();
         } else {
             System.out.println("Удаленные продукты: " + deleted);
+            return deleted;
         }
-        return deleted;
-
     }
 }
+

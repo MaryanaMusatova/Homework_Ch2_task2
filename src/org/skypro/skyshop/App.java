@@ -137,7 +137,9 @@ public class App {
         System.out.println("печать содержимого корзины после удаления несуществующего продукта:");
         basket.printProductBasket();
 
-
+        System.out.println();
+        System.out.println("ДЗ: Java Collections Framework: Map (демонстрация измененного метода поиска по ключам-именам, значения - сами объекты) ");
+        System.out.println((searchEngine.search("капуста белокачанная, кг")));
     }
 }
     
