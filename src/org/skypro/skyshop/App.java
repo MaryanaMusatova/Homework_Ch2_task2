@@ -122,10 +122,10 @@ public class App {
         System.out.println();
         System.out.println("ДЗ: Java Collections Framework: List");
 
-        basket.addProductInBasket(new SimpleProduct("ананас",185));
-        basket.addProductInBasket(new DiscountedProduct("вишня",98,10));
-        basket.addProductInBasket(new FixPriceProduct("яблочный сок",25));
-        basket.addProductInBasket(new FixPriceProduct("конфеты мерси",25));
+        basket.addProductInBasket(new SimpleProduct("ананас", 185));
+        basket.addProductInBasket(new DiscountedProduct("вишня", 98, 10));
+        basket.addProductInBasket(new FixPriceProduct("яблочный сок", 25));
+        basket.addProductInBasket(new FixPriceProduct("конфеты мерси", 25));
 
         System.out.println("удаление существующего продукта:");
         basket.deleteProduct("ананас");
@@ -140,12 +140,25 @@ public class App {
         System.out.println();
         System.out.println("ДЗ: Java Collections Framework: Map (демонстрация измененного метода поиска по ключам-именам, значения - сами объекты) ");
         System.out.println((searchEngine.search("капуста белокачанная, кг")));
+
+
+        System.out.println();
+        System.out.println("ДЗ: Java Collections Framework: Set");
+
+        Article articleTestSet1 = new Article("Статья о том, как я выбираю капусту", "Брокколи. Чтобы правильно выбрать соцветия, нужно ориентироваться на внешний вид и тактильные ощущения. Чем ярче цвет, свежее «бутоны» и выше плотность, тем лучше.");
+        Article articleTestSet2 = new Article("Статья о сахаре", "Сахар необходим организму для нормальной жизнедеятельности. Глюкоза обеспечивает метаболические процессы, в ней нуждаются головной и спинной мозг, мышцы, печень, селезёнка.большое количество сладостей помогает легче переносить стресс.");
+        Article articleTestSet3 = new Article("Статья о современных продуктах питания: хуже или лучше тех, что употребляли наши предки?", "Нельзя однозначно сказать, лучше или хуже современные продукты питания тех, что употребляли предки.");
+
+        SearchEngine searchEngine1 = new SearchEngine();
+
+        searchEngine1.add(articleTestSet1);
+        searchEngine1.add(articleTestSet2);
+        searchEngine1.add(articleTestSet3);
+
+        System.out.println("Результаты поиска:");
+        searchEngine1.search("Статья").forEach(System.out::println);
+
     }
 }
-    
-
-
-
-
 
 

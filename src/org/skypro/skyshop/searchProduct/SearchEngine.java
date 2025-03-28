@@ -2,22 +2,20 @@ package org.skypro.skyshop.searchProduct;
 
 import org.skypro.skyshop.exceptions.BestResultNotFound;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class SearchEngine {
-    private final Map<String, Searchable> searchObject;
+    private final Set<Searchable> searchObject;
 
     public SearchEngine() {
-        this.searchObject = new TreeMap<>();
+        this.searchObject = new TreeSet<>(new SearchComparator());
     }
 
-    public List<Searchable> search(String searchTerm) {
-        List<Searchable> result = new ArrayList<>();
-        for (Map.Entry<String, Searchable> entry : searchObject.entrySet()) {
-            Searchable searchable = entry.getValue();
+    public Set<Searchable> search(String searchTerm) {
+        Set<Searchable> result = new HashSet<>();
+        for (Searchable searchable : searchObject) {
             if (searchable.searchTerm().contains(searchTerm)) {
                 result.add(searchable);
             }
@@ -29,7 +27,7 @@ public class SearchEngine {
         if (object == null) {
             throw new IllegalArgumentException("Поисковый запрос не может быть null");
         }
-        searchObject.putIfAbsent(object.searchTerm(), object);//или здесь лучше использовать просто put?
+        searchObject.add(object);
     }
 
     public Searchable getSearchTerm(String search) throws BestResultNotFound {
@@ -37,8 +35,7 @@ public class SearchEngine {
             throw new IllegalArgumentException("Поисковый запрос не может быть null");
         }
 
-        for (Map.Entry<String, Searchable> entry : searchObject.entrySet()) {
-            Searchable searchable = entry.getValue();
+        for (Searchable searchable : searchObject) {
             if (searchable != null && searchable.getStringRepresentation().contains(search)) {
                 return searchable;
             }
