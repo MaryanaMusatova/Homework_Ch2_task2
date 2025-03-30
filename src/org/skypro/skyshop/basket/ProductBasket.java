@@ -2,14 +2,11 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class ProductBasket {
-    Map<String, List<Product>> basket;
+    private final Map<String, List<Product>> basket;
 
     public ProductBasket() {
         this.basket = new HashMap<>();
@@ -17,20 +14,15 @@ public class ProductBasket {
 
     public void addProductInBasket(Product product) {
 
-        String title = product.getTitle();
-        List<Product> productList = basket.computeIfAbsent(product.getTitle(), k -> new ArrayList<>());
-        productList.add(product);
-        basket.put(title, productList);
+        basket.computeIfAbsent(product.getTitle(), k -> new ArrayList<>()).add(product);
     }
 
     public int sumOfBasket() {
-        int sum = 0;
-        for (List<Product> products : basket.values()) {
-            for (Product product : products) {
-                if (product != null) sum += product.getPrice();
-            }
-        }
-        return sum;
+        return basket.values().stream()
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
     public void printProductBasket() {
@@ -39,14 +31,12 @@ public class ProductBasket {
             return;
         }
 
-        for (Map.Entry<String, List<Product>> entry : basket.entrySet()) {
-            for (Product product : entry.getValue()) {
-                if (product != null) {
-                    System.out.println(product);
-                }
-            }
-        }
-        System.out.printf("Итого: %d\n", this.sumOfBasket());
+        basket.values().stream()
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .forEach(System.out::println);
+
+        System.out.printf("Итого: %d\n", sumOfBasket());
     }
 
     public void clearProductBasket() {
@@ -54,39 +44,43 @@ public class ProductBasket {
     }
 
     public boolean checkAvailability(String title) {
-        return basket.containsKey(title) && !basket.get(title).isEmpty();
+        return basket.values().stream().flatMap(Collection::stream)
+                .anyMatch(product -> product.getTitle().contains(title));
     }
 
     public List<Product> countingSpecialItems() {
-        int specialCount = 0;
-        for (List<Product> products : basket.values()) {
-            for (Product product : products) {
-                if (product != null && product.isSpecial()) {
-                    specialCount++;
-                    System.out.println(product.getTitle() + ": " + product.getPrice() + " (Специальный товар)");
-                } else if (product != null) {
-                    System.out.println(product);
-                }
-            }
-        }
+        long specialCount = basket.values().stream()
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .peek(product -> {
+                    if (product.isSpecial()) {
+                        System.out.println(product.getTitle() + ": " + product.getPrice() + " (Специальный товар)");
+                    } else {
+                        System.out.println(product);
+                    }
+                })
+                .filter(Product::isSpecial)
+                .count();
+
         System.out.println("Специальных товаров: " + specialCount);
         if (specialCount == 0) {
             System.out.println("Специальных товаров нет");
         }
-        return List.of();
+
+        return Collections.emptyList();
     }
 
     public List<Product> deleteProduct(String name) {
 
-        List<Product> deleted = basket.remove(name);
-
-        if (deleted == null || deleted.isEmpty()) {
-            System.out.println("Список удаленных продуктов пуст.");
-            return List.of();
-        } else {
-            System.out.println("Удаленные продукты: " + deleted);
-            return deleted;
-        }
+        return Optional.ofNullable(basket.remove(name))
+                .filter(list -> !list.isEmpty())
+                .map(deleted -> {
+                    System.out.println("Удаленные продукты: " + deleted);
+                    return deleted;
+                })
+                .orElseGet(() -> {
+                    System.out.println("Список удаленных продуктов пуст.");
+                    return Collections.emptyList();
+                });
     }
 }
-
