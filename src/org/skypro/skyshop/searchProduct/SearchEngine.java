@@ -10,11 +10,11 @@ public class SearchEngine {
     private final Set<Searchable> searchObject;
 
     public SearchEngine() {
-        this.searchObject = new TreeSet<>(new SearchComparator());
+        this.searchObject = new HashSet<>();
     }
 
     public Set<Searchable> search(String searchTerm) {
-        Set<Searchable> result = new HashSet<>();
+        Set<Searchable> result = new TreeSet<>(new SearchComparator());
         for (Searchable searchable : searchObject) {
             if (searchable.searchTerm().contains(searchTerm)) {
                 result.add(searchable);
