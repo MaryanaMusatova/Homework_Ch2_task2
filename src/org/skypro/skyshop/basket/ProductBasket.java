@@ -2,72 +2,85 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
-import java.util.Arrays;
+import java.util.*;
+
 
 public class ProductBasket {
-    private static final int lengthOfProduct = 5;
-    private final Product[] basket;
+    private final Map<String, List<Product>> basket;
 
     public ProductBasket() {
-        this.basket = new Product[lengthOfProduct];
-
+        this.basket = new HashMap<>();
     }
 
     public void addProductInBasket(Product product) {
-        int flag = 0;
-        for (int i = 0; i < lengthOfProduct; i++) {
-            if (basket[i] == null) {
-                basket[i] = product;
-                return;
-            } else {
-                flag++;
-            }
-        }
-        if (flag >= 5) {
-            System.out.println("Невозможно добавить продукт!");
-        }
+
+        basket.computeIfAbsent(product.getTitle(), k -> new ArrayList<>()).add(product);
     }
 
-
     public int sumOfBasket() {
-        int sum = 0;
-        for (Product product : basket) {
-            if (product != null) sum += product.getPrice();
-        }
-        return sum;
+        return basket.values().stream()
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
     public void printProductBasket() {
-        int flag = 0;
-        for (Product product : basket) {
-            if (product != null) System.out.println(product);
-            flag++;
+        if (basket.isEmpty()) {
+            System.out.println("В корзине пусто!");
+            return;
         }
-        System.out.printf("Итого: %d\n", this.sumOfBasket());
 
-        if (flag == 0) System.out.println("В корзине пусто!");
+        basket.values().stream()
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .forEach(System.out::println);
+
+        System.out.printf("Итого: %d\n", sumOfBasket());
     }
 
     public void clearProductBasket() {
-        for (int i = 0; i < lengthOfProduct; i++) {
-            basket[i] = null;
-        }
+        basket.clear();
     }
 
     public boolean checkAvailability(String title) {
-        boolean check = false;
-        for (Product p : basket) {
-            if (p == null) continue;
-            if (title.equals(p.getTitle())) {
-                check = true;
-                break;
-            }
-        }
-        return check;
+        return basket.values().stream().flatMap(Collection::stream)
+                .anyMatch(product -> product.getTitle().contains(title));
     }
 
-    @Override
-    public String toString() {
-        return Arrays.toString(basket);
+    public List<Product> countingSpecialItems() {
+        long specialCount = basket.values().stream()
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .peek(product -> {
+                    if (product.isSpecial()) {
+                        System.out.println(product.getTitle() + ": " + product.getPrice() + " (Специальный товар)");
+                    } else {
+                        System.out.println(product);
+                    }
+                })
+                .filter(Product::isSpecial)
+                .count();
+
+        System.out.println("Специальных товаров: " + specialCount);
+        if (specialCount == 0) {
+            System.out.println("Специальных товаров нет");
+        }
+
+        return Collections.emptyList();
+    }
+
+    public List<Product> deleteProduct(String name) {
+
+        return Optional.ofNullable(basket.remove(name))
+                .filter(list -> !list.isEmpty())
+                .map(deleted -> {
+                    System.out.println("Удаленные продукты: " + deleted);
+                    return deleted;
+                })
+                .orElseGet(() -> {
+                    System.out.println("Список удаленных продуктов пуст.");
+                    return Collections.emptyList();
+                });
     }
 }
